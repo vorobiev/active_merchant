@@ -15,23 +15,23 @@ module ActiveMerchant #:nodoc:
         super
       end
 
-      def authorize(token, amount, options={}, with_token=true)
-        if with_token
-          options.merge!(:Token => token, :Amount => amount)
-          commit("payments/tokens/auth", options)
-        else
+      def authorize(token, amount, options={}, with_crypto=false)
+        if with_crypto
           options.merge!(:CardCryptogramPacket => token, :Amount => amount)
           commit("payments/cards/auth", options)
+        else
+          options.merge!(:Token => token, :Amount => amount)
+          commit("payments/tokens/auth", options)
         end
       end
 
-      def purchase(token, amount, options={}, with_token=true)
-        if with_token
-          options.merge!(:Token => token, :Amount => amount)
-          commit("payments/tokens/charge", options)
-        else
+      def purchase(token, amount, options={}, with_crypto=false)
+        if with_crypto
           options.merge!(:CardCryptogramPacket => token, :Amount => amount)
           commit("payments/cards/charge", options)
+        else
+          options.merge!(:Token => token, :Amount => amount)
+          commit("payments/tokens/charge", options)
         end
       end
 
