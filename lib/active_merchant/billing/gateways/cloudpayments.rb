@@ -15,7 +15,7 @@ module ActiveMerchant #:nodoc:
         super
       end
 
-      def authorize(token, amount, options={}, with_token=false)
+      def authorize(token, amount, options={}, with_token=true)
         if with_token
           options.merge!(:Token => token, :Amount => amount)
           commit("payments/tokens/auth", options)
@@ -25,7 +25,7 @@ module ActiveMerchant #:nodoc:
         end
       end
 
-      def purchase(token, amount, options={}, with_token=false)
+      def purchase(token, amount, options={}, with_token=true)
         if with_token
           options.merge!(:Token => token, :Amount => amount)
           commit("payments/tokens/charge", options)
