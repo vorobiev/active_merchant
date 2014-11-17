@@ -60,6 +60,11 @@ module ActiveMerchant #:nodoc:
         commit('subscriptions/cancel', {:Id => subscription_id})
       end
 
+      def update_subscription subscription_id, options={}
+        options.merge!(:Id => subscription_id)
+        commit('subscriptions/update', options)
+      end
+
       def check_3ds(transaction_id, pa_res)
         commit('payments/post3ds', {:TransactionId => transaction_id, :PaRes => pa_res})
       end
