@@ -76,11 +76,6 @@ module ActiveMerchant #:nodoc:
         response = parse(ssl_post(live_url + path, parameters, headers) )
         model = response['Model']
 
-        auth  = if success?(response)
-                  model.present? ? model['TransactionId'] || model['Id'] : 'success'
-                else
-                  model.present? ? model['TransactionId'] : 'failure'
-                end
 
         msg = if success?(response)
                 'Transaction approved'
@@ -91,7 +86,7 @@ module ActiveMerchant #:nodoc:
                   elsif model['Reason'].present?
                     model['Reason']
                   elsif model['PaReq'].present?
-                    '3ds needed'
+                    '3ds'
                   end
                 else
                   response['Message']
@@ -101,13 +96,21 @@ module ActiveMerchant #:nodoc:
         Response.new(success?(response),
           msg,
           model,
-          authorization: auth,
+          authorization: auth_from(response),
           test: test?
         )
       end
 
       def success?(response)
         response['Success']
+      end
+
+      def auth_from response
+        if success?(response)
+          model.present? ? model['TransactionId'] || model['Id'] : ''
+        else
+          model.present? ? model['TransactionId'] : ''
+        end
       end
 
       def parse(body)
