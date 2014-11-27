@@ -106,6 +106,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def auth_from response
+        model = response['Model']
         if success?(response)
           model.present? ? model['TransactionId'] || model['Id'] : ''
         else
